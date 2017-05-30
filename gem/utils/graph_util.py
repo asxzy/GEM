@@ -1,4 +1,4 @@
-import cPickle as pickle
+import pickle as pickle
 import numpy as np
 import networkx as nx
 import random
@@ -16,9 +16,9 @@ def transform_DiGraph_to_adj(di_graph):
 def transform_adj_to_DiGraph(adj):
     n = adj.shape[0]
     di_graph = nx.DiGraph()
-    di_graph.add_nodes_from(range(n))
-    for i in xrange(n):
-        for j in xrange(n):
+    di_graph.add_nodes_from(list(range(n)))
+    for i in range(n):
+        for j in range(n):
             if(i != j):
                 if(adj[i, j] > 0):
                     di_graph.add_edge(i, j, weight=adj[i, j])
@@ -30,7 +30,7 @@ def sample_graph(di_graph, n_sampled_nodes=None):
         node_l = np.random.choice(node_num, n_sampled_nodes, replace=False)
         node_l_inv = {v: k for k, v in enumerate(node_l)}
         sampled_graph = nx.DiGraph()
-        sampled_graph.add_nodes_from(range(n_sampled_nodes))
+        sampled_graph.add_nodes_from(list(range(n_sampled_nodes)))
         for st, ed, w in di_graph.edges_iter(data='weight', default=1):
             try:
                 v_i = node_l_inv[st]
@@ -64,11 +64,11 @@ def randwalk_DiGraph_to_adj(di_graph, node_frac=0.1, n_walks_per_node=5, len_rw=
                     adj[cur_node, neighbor_node] = 1
                     adj[neighbor_node, cur_node] = 1
                 cur_node = neighbor_node
-    print('Time taken for random walk on graph with {0} nodes = {1}'.format(n, time.time() - t0))
+    print(('Time taken for random walk on graph with {0} nodes = {1}'.format(n, time.time() - t0)))
     return adj
 
 def addChaos(di_graphs, k):
-    anomaly_time_steps = sorted(random.sample(range(len(di_graphs)), k))
+    anomaly_time_steps = sorted(random.sample(list(range(len(di_graphs))), k))
     for t in anomaly_time_steps:
         n = di_graphs[t].number_of_nodes()
         e = di_graphs[t].number_of_edges()
@@ -77,7 +77,7 @@ def addChaos(di_graphs, k):
     return di_graphs, anomaly_time_steps
 
 def addNodeAnomalies(di_graphs, p, k):
-    anomaly_time_steps = sorted(random.sample(range(len(di_graphs)), k))
+    anomaly_time_steps = sorted(random.sample(list(range(len(di_graphs))), k))
     for t in anomaly_time_steps:
         n_nodes= di_graphs[t].number_of_nodes()
         anomalous_nodes_idx = np.random.choice([0,1], size=(n_nodes, 1), p=(1-p, p))
@@ -86,9 +86,9 @@ def addNodeAnomalies(di_graphs, p, k):
         anomalous_nodes = np.multiply(anomalous_nodes_idx, node_list)
         anomalous_nodes = anomalous_nodes[anomalous_nodes > 0]
         # pdb.set_trace()
-        di_graphs[t].add_edges_from(itertools.product(list(anomalous_nodes), range(n_nodes)))
-        di_graphs[t].add_edges_from(itertools.product(range(n_nodes), list(anomalous_nodes)))
-        print 'Nodes: %d, Edges: %d' % (di_graphs[t].number_of_nodes(), di_graphs[t].number_of_edges())
+        di_graphs[t].add_edges_from(itertools.product(list(anomalous_nodes), list(range(n_nodes))))
+        di_graphs[t].add_edges_from(itertools.product(list(range(n_nodes)), list(anomalous_nodes)))
+        print('Nodes: %d, Edges: %d' % (di_graphs[t].number_of_nodes(), di_graphs[t].number_of_edges()))
     return anomaly_time_steps
 
 def saveGraphToEdgeListTxt(graph, file_name):
@@ -154,8 +154,8 @@ def saveRealGraphSeries(G, file_prefix='graphs/day_'):
         nx.write_gpickle(G[idx], f_name)
 
 def loadDynamicSBmGraph(file_perfix, length):
-    graph_files = ['%s_%d_graph.gpickle' % (file_perfix, i) for i in xrange(length)]
-    info_files = ['%s_%d_node.pkl' % (file_perfix, i) for i in xrange(length)]
+    graph_files = ['%s_%d_graph.gpickle' % (file_perfix, i) for i in range(length)]
+    info_files = ['%s_%d_node.pkl' % (file_perfix, i) for i in range(length)]
 
     graphs = [nx.read_gpickle(graph_file) for graph_file in graph_files]
     
@@ -167,15 +167,15 @@ def loadDynamicSBmGraph(file_perfix, length):
             nodes_comunities.append(node_infos['community'])
             perturbations.append(node_infos['perturbation'])
 
-    return zip(graphs, nodes_comunities, perturbations)
+    return list(zip(graphs, nodes_comunities, perturbations))
 
 
 def saveDynamicSBmGraph(file_perfix, dynamic_graphs):
     length = len(dynamic_graphs)
-    graph_files = ['%s_%d_graph.gpickle' % (file_perfix, i) for i in xrange(length)]
-    info_files = ['%s_%d_node.pkl' % (file_perfix, i) for i in xrange(length)]
+    graph_files = ['%s_%d_graph.gpickle' % (file_perfix, i) for i in range(length)]
+    info_files = ['%s_%d_node.pkl' % (file_perfix, i) for i in range(length)]
 
-    for i in xrange(length):
+    for i in range(length):
         # save graph
         nx.write_gpickle(dynamic_graphs[i][0], graph_files[i])
         # save additional node info

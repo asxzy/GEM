@@ -17,7 +17,7 @@ from time import time
 import sys
 sys.path.append('./')
 
-from static_graph_embedding import StaticGraphEmbedding
+from .static_graph_embedding import StaticGraphEmbedding
 from gem.utils import graph_util, plot_util
 from gem.evaluation import visualize_embedding as viz
 
@@ -59,7 +59,7 @@ class HOPE(StaticGraphEmbedding):
 
 		p_d_p_t = np.dot(u, np.dot(np.diag(s), vt))
 		eig_err = np.linalg.norm(p_d_p_t - S)
-		print 'SVD error (low rank): %f' % eig_err
+		print('SVD error (low rank): %f' % eig_err)
 
 		# p_d_p_t = np.dot(self._X, np.dot(w[1:self._d+1, 1:self._d+1], self._X.T))
 		# eig_err = np.linalg.norm(p_d_p_t - L_sym)
@@ -92,11 +92,11 @@ if __name__ == '__main__':
 	G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed=False)
 	G = G.to_directed()
 	res_pre = 'results/testKarate'
-	print 'Num nodes: %d, num edges: %d' % (G.number_of_nodes(), G.number_of_edges())
+	print('Num nodes: %d, num edges: %d' % (G.number_of_nodes(), G.number_of_edges()))
 	t1 = time()
 	embedding = HOPE(4, 0.01)
 	embedding.learn_embedding(graph=G, edge_f=None, is_weighted=True, no_python=True)
-	print 'HOPE:\n\tTraining time: %f' % (time() - t1)
+	print('HOPE:\n\tTraining time: %f' % (time() - t1))
 
 	viz.plot_embedding2D(embedding.get_embedding()[:, :2], di_graph=G, node_colors=None)
 	plt.show()

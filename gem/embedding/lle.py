@@ -19,7 +19,7 @@ import pdb
 import sys
 sys.path.append('./')
 
-from static_graph_embedding import StaticGraphEmbedding
+from .static_graph_embedding import StaticGraphEmbedding
 from gem.utils import graph_util, plot_util
 from gem.evaluation import visualize_embedding as viz
 
@@ -79,11 +79,11 @@ if __name__ == '__main__':
 	G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed=False)
 	G = G.to_directed()
 	res_pre = 'results/testKarate'
-	print 'Num nodes: %d, num edges: %d' % (G.number_of_nodes(), G.number_of_edges())
+	print('Num nodes: %d, num edges: %d' % (G.number_of_nodes(), G.number_of_edges()))
 	t1 = time()
 	embedding = LocallyLinearEmbedding(2)
 	embedding.learn_embedding(graph=G, edge_f=None, is_weighted=True, no_python=True)
-	print 'Graph Factorization:\n\tTraining time: %f' % (time() - t1)
+	print('Graph Factorization:\n\tTraining time: %f' % (time() - t1))
 
 	viz.plot_embedding2D(embedding.get_embedding(), di_graph=G, node_colors=None)
 	plt.show()

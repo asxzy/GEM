@@ -1,8 +1,6 @@
 from abc import ABCMeta
 
-class StaticGraphEmbedding:
-	__metaclass__ = ABCMeta
-
+class StaticGraphEmbedding(metaclass=ABCMeta):
 	def __init__(self, d):
 		'''Initialize the Embedding class
 

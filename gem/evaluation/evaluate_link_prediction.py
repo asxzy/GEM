@@ -18,7 +18,7 @@ def evaluateStaticLinkPrediction(digraph, graph_embedding,
     if not nx.is_connected(train_digraph.to_undirected()):
       train_digraph = max(nx.weakly_connected_component_subgraphs(train_digraph),key=len)
       tdl_nodes = train_digraph.nodes()
-      nodeListMap = dict(zip(tdl_nodes, range(len(tdl_nodes))))
+      nodeListMap = dict(list(zip(tdl_nodes, list(range(len(tdl_nodes))))))
       nx.relabel_nodes(train_digraph, nodeListMap, copy=False)
       test_digraph = test_digraph.subgraph(tdl_nodes)
       nx.relabel_nodes(test_digraph, nodeListMap, copy=False)
