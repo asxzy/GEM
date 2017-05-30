@@ -104,7 +104,7 @@ def saveGraphToEdgeListTxtn2v(graph, file_name):
             f.write('%d %d %f\n' % (i, j, w))
 
 
-def loadGraphFromEdgeListTxt(file_name, directed=True):
+def loadGraphFromEdgeListTxt(file_name, directed=True, map_str2id = False):
     with open(file_name, 'r') as f:
         n_nodes = f.readline()
         f.readline() # Discard the number of edges
@@ -112,14 +112,30 @@ def loadGraphFromEdgeListTxt(file_name, directed=True):
             G = nx.DiGraph()
         else:
             G = nx.Graph()
+        if map_str2id:
+            str2id = {}
+            id2str = []
         for line in f:
             edge = line.strip().split()
             if len(edge) == 3:
                 w = float(edge[2])
             else:
                 w = 1.0
+            if map_str2id:
+                if edge[0] not in str2id:
+                    str2id[edge[0]] = len(str2id)
+                    id2str.append(edge[0])
+                edge[0] = str2id[edge[0]]
+                if edge[1] not in str2id:
+                    str2id[edge[1]] = len(str2id)
+                    id2str.append(edge[1])
+                edge[1] = str2id[edge[1]]
+
             G.add_edge(int(edge[0]), int(edge[1]), weight=w)
-    return G
+    if map_str2id:
+        return G,str2id,id2str
+    else:
+        return G
 
 def loadEmbedding(file_name):
     with open(file_name, 'r') as f:
